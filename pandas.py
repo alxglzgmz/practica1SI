@@ -14,7 +14,7 @@ def sql_fetch(con):
     for row in rows:
         print(row)
 #
-def sql_delete(con):
+def sql_delete_table(con):
     cursorObj = con.cursor()
     cursorObj.execute('DROP TABLE alerts')
     con.commit()
@@ -30,7 +30,7 @@ def sql_create_table(con):
     con.commit()
 
 con = sqlite3.connect('example.db')
-sql_delete(con)
+sql_delete_table(con)
 sql_create_table(con)
 
 alerts = pd.read_csv('alerts.csv')
