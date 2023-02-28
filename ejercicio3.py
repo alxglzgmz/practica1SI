@@ -31,6 +31,12 @@ def sql_count_distinct(con):
     num = cursorObj.fetchone()
     print("El número distinto de dispositivos es: " + str(num[0]))
 
+def sql_count_alerts(con):
+    cursorObj = con.cursor()
+    cursorObj.execute('SELECT COUNT(msg) from alerts')
+    num = cursorObj.fetchone()
+    print("El número de alertas es: " + str(num[0]))
+
 con = sqlite3.connect('example.db')
 sql_delete_table(con)
 sql_create_table(con)
@@ -41,3 +47,4 @@ alerts.to_sql('alerts', con, if_exists='append', index=False)
 
 #sql_fetch(con)
 sql_count_distinct(con)
+sql_count_alerts(con)
