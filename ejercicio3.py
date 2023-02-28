@@ -1,6 +1,7 @@
 import sqlite3
 import pandas as pd
 
+
 # def sql_update(con):
 #     cursorObj = con.cursor()
 #     cursorObj.execute('UPDATE usuarios SET nombre = "Sergio" where dni = "X"')
@@ -19,9 +20,10 @@ def sql_delete_table(con):
     con.commit()
 
 
-def sql_create_table(con):
+def sql_create_table(con, dev):
     cursorObj = con.cursor()
     cursorObj.execute('''CREATE TABLE alerts (timestampa text ,sid text ,msg text ,clasificacion text ,prioridad int,protocolo text,origen text ,destino text ,puerto int)''')
+    cursorObj.execute('''CREATE TABLE devices(id text, ip text, localizacion text, responsable ''')
     con.commit()
 
 
@@ -40,11 +42,14 @@ def sql_count_alerts(con):
 con = sqlite3.connect('example.db')
 sql_delete_table(con)
 sql_create_table(con)
+df = pd.read_json('devices.json')
+dev = sqlite3.connect('devices.db')
+
 
 alerts = pd.read_csv('alerts.csv')
 alerts.to_sql('alerts', con, if_exists='append', index=False)
 
 
-#sql_fetch(con)
+
 sql_count_distinct(con)
 sql_count_alerts(con)
