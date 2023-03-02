@@ -1,6 +1,7 @@
 import json
 import sqlite3
 import pandas as pd
+import statistics
 
 
 
@@ -55,18 +56,40 @@ def creacionTablas(con):
 
 def ejercicio2(con):
     cursorEj2 = con.cursor()
-    numDisp = cursorEj2.execute('''SELECT COUNT (DISTINCT id) from devices''').fetchone()
-    print("El número de dispositivos es: " + str(numDisp[0]))
-    numAlertas = cursorEj2.execute('''SELECT COUNT(*) from alerts''').fetchone()
-    print("El número de alertas es: " + str(numAlertas[0]))
+    num_disp = cursorEj2.execute('''SELECT COUNT (DISTINCT id) from devices''').fetchone()
+    print("El número de dispositivos es: " + str(num_disp[0]))
+    num_alertas = cursorEj2.execute('''SELECT COUNT(*) from alerts''').fetchone()
+    print("El número de alertas es: " + str(num_alertas[0]))
 
-    mediaPuertos = cursorEj2.execute('''SELECT AVG(numberports) from analisis''').fetchone()
-    print("La media de puertos abiertos es: " + str(mediaPuertos[0]))
-    media = mediaPuertos[0]
-    desvPuertos = cursorEj2.execute('''SELECT SQRT(SUM(POWER((numberports - media), 2)) / COUNT(numberports)) as desviacion_estandar
-FROM analisis
-CROSS JOIN (SELECT AVG(numberports) as media FROM analisis) as subconsulta''')
-    print("La desviacion tipica de puertos abiertos es: " + str(desvPuertos[0]))
+    media_puertos = cursorEj2.execute('''SELECT AVG(numberports) from analisis''').fetchone()
+    print("La media de puertos abiertos es: " + str(media_puertos[0]))
+    puertos_abiertos = cursorEj2.execute('''SELECT numberports from analisis''').fetchall()
+    desv_puertos = statistics.stdev(puertos[0] for puertos in puertos_abiertos)
+    print("La desviación estándar del total de puertos abiertos es: " + str(desv_puertos))
+
+    media_servicios= cursorEj2.execute('''SELECT AVG(servicios_inseguros) from analisis''').fetchone()
+    print("La media de servicios inseguros detectados es: " + str(media_servicios[0]))
+    servicios_detectados = cursorEj2.execute('''SELECT servicios_inseguros from analisis''').fetchall()
+    desv_servicios = statistics.stdev(servicios[0] for servicios in servicios_detectados)
+    print("La desviación estándar del total de servicios inseguros detectados es: " + str(desv_servicios))
+
+    media_vulnerabilidades = cursorEj2.execute('''SELECT AVG(vulnerabilidades) from analisis''').fetchone()
+    print("La media de vulnerabilidades detectadas es: " + str(media_vulnerabilidades[0]))
+    vulnerabilidades = cursorEj2.execute('''SELECT vulnerabilidades from analisis''').fetchall()
+    desv_vulnerabilidades = statistics.stdev(vuln[0] for vuln in vulnerabilidades)
+    print("La desviación estándar del total de vulnerabilidades detectadas es: " + str(desv_vulnerabilidades))
+
+    puerto_min = cursorEj2.execute('''SELECT MIN(numberports) from analisis''').fetchone()
+    print("El mínimo número de puertos abiertos que se han detectado es: " + str(puerto_min[0]))
+    puerto_max = cursorEj2.execute('''SELECT MAX(numberports) from analisis''').fetchone()
+    print("El máximo número de puertos abiertos que se han detectado es: " + str(puerto_max[0]))
+
+    vuln_min = cursorEj2.execute('''SELECT MIN(vulnerabilidades) from analisis''').fetchone()
+    print("El mínimo número de vulnerabilidades que se han detectado es: " + str(vuln_min[0]))
+    vuln_max = cursorEj2.execute('''SELECT MAX(vulnerabilidades) from analisis''').fetchone()
+    print("El máximo número de vulnerabilidades que se han detectado es: " + str(vuln_max[0]))
+
+
 
 
 
