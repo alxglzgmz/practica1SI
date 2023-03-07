@@ -16,7 +16,6 @@ def creacionTablas(con):
     cursorObj.execute('''CREATE TABLE IF NOT EXISTS analisis(id INTEGER PRIMARY KEY, puertosabiertos text, numberports int, servicios int, servicios_inseguros int, vulnerabilidades int)''')
     cursorObj.execute('''CREATE TABLE IF NOT EXISTS responsable(nombre text PRIMARY KEY, telefono text, rol text)''')
     cursorObj.execute('''CREATE TABLE IF NOT EXISTS devices(id text PRIMARY KEY, ip text, localizacion text, nombre_responsable text, analisis_id int, FOREIGN KEY(nombre_responsable) REFERENCES responsable(nombre), FOREIGN KEY(analisis_id) REFERENCES analisis(id))''')
-    cursorObj.execute('''CREATE TABLE IF NOT EXISTS AS SELECT alerts., alerts.campo2 FROM alerts JOIN devices ON tabla1clave_comun=tabla2.clavecomun''')
 
 
     cursorObj.execute('''INSERT INTO responsable VALUES ("admin", "656445552","Administracion de sistemas") ON CONFLICT(nombre) DO NOTHING''')
@@ -44,6 +43,8 @@ def creacionTablas(con):
     cursorObj.execute('''INSERT INTO devices VALUES("dhcp_server","172.1.0.1","Madrid","admiin",5)''')
     cursorObj.execute('''INSERT INTO devices VALUES("mysql_db","172.18.0.1","None","admin",6)''')
     cursorObj.execute('''INSERT INTO devices VALUES("ELK","172.18.0.2","None","admin",7)''')
+
+
 
     con.commit()
 
@@ -86,9 +87,7 @@ def ejercicio3(con):
 
     cursorEj3 = con.cursor()
 
-    cursorEj3.execute('''CREATE TABLE IF NOT EXISTS alerts_priority AS SELECT (prioridad) FROM alerts GROUP BY prioridad''')
-    rows = cursorEj3.execute(''' SELECT * FROM alerts_priority''').fetchall()
-
+    rows = cursorEj3.execute('''SELECT * FROM alerts JOIN devices on alerts.origen = devices.ip''').fetchall()
 
 
     for row in rows:
