@@ -80,6 +80,23 @@ def ejercicio2(con):
     vuln_max = cursorEj2.execute('''SELECT MAX(vulnerabilidades) from analisis''').fetchone()
     print("El máximo número de vulnerabilidades que se han detectado es: " + str(vuln_max[0]))
 
+def ejercicio3(con):
+
+    cursorEj3 = con.cursor()
+
+    cursorEj3.execute('''CREATE TABLE alerts_priority AS SELECT (prioridad) FROM alerts GROUP BY prioridad''')
+    rows = cursorEj3.execute(''' SELECT (*) FROM alerts_priority''').fetchall()
+
+
+
+    for row in rows:
+        print(row)
+
+
+
+
+
+
 
 con = sqlite3.connect('devices.db')
 
