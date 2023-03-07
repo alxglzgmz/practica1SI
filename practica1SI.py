@@ -87,11 +87,13 @@ def ejercicio3(con):
 
     cursorEj3 = con.cursor()
 
-    rows = cursorEj3.execute('''SELECT * FROM alerts JOIN devices on alerts.origen = devices.ip''').fetchall()
+    alertas = cursorEj3.execute('''SELECT  COUNT(*) FROM devices JOIN alerts on alerts.origen = devices.ip JOIN analisis on devices.analisis_id = analisis.id  WHERE alerts.prioridad=1''').fetchone()
+    print("El número de alertas de prioridad 1 es: " + str(alertas[0]))
 
+    mediana = cursorEj3.execute('''SELECT vulnerabilidades FROM devices JOIN alerts on alerts.origen = devices.ip JOIN analisis on devices.analisis_id = analisis.id  WHERE alerts.prioridad=1''').fetchall()
+    mediana_valor = statistics.median(mediana)
+    print("La mediana de vulnerabilidades: " + str(print(mediana_valor)))
 
-    for row in rows:
-        print(row)
 
 
 
