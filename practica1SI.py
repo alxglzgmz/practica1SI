@@ -84,8 +84,8 @@ def ejercicio3(con):
 
     cursorEj3 = con.cursor()
 
-    cursorEj3.execute('''CREATE TABLE alerts_priority AS SELECT (prioridad) FROM alerts GROUP BY prioridad''')
-    rows = cursorEj3.execute(''' SELECT (*) FROM alerts_priority''').fetchall()
+    cursorEj3.execute('''CREATE TABLE IF NOT EXISTS alerts_priority AS SELECT (prioridad) FROM alerts GROUP BY prioridad''')
+    rows = cursorEj3.execute(''' SELECT * FROM alerts_priority''').fetchall()
 
 
 
@@ -103,7 +103,7 @@ con = sqlite3.connect('devices.db')
 creacionTablas(con)
 alerts = pd.read_csv('alerts.csv')
 alerts.to_sql('alerts', con, if_exists='append', index=False)
-ejercicio2(con)
+ejercicio3(con)
 
 
 
