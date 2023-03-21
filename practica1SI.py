@@ -50,38 +50,29 @@ def creacionTablas(con):
 
 def ejercicio2(con):
     cursorEj2 = con.cursor()
-    num_disp = cursorEj2.execute('''SELECT COUNT (DISTINCT id) from devices''').fetchone()
-    print("El número de dispositivos es: " + str(num_disp[0]))
-    num_alertas = cursorEj2.execute('''SELECT COUNT(*) from alerts''').fetchone()
-    print("El número de alertas es: " + str(num_alertas[0]))
+    num_disp = df_devices['id'].nunique()
+    print("El número de dispositivos es: " + str(num_disp))
 
-    media_puertos = cursorEj2.execute('''SELECT AVG(numberports) from analisis''').fetchone()
-    print("La media de puertos abiertos es: " + str(media_puertos[0]))
-    puertos_abiertos = cursorEj2.execute('''SELECT numberports from analisis''').fetchall()
-    desv_puertos = statistics.stdev(puertos[0] for puertos in puertos_abiertos)
-    print("La desviación estándar del total de puertos abiertos es: " + str(desv_puertos))
 
-    media_servicios= cursorEj2.execute('''SELECT AVG(servicios_inseguros) from analisis''').fetchone()
-    print("La media de servicios inseguros detectados es: " + str(media_servicios[0]))
-    servicios_detectados = cursorEj2.execute('''SELECT servicios_inseguros from analisis''').fetchall()
-    desv_servicios = statistics.stdev(servicios[0] for servicios in servicios_detectados)
-    print("La desviación estándar del total de servicios inseguros detectados es: " + str(desv_servicios))
+    print("El número de alertas es: " + str(len(df_alerts)))
 
-    media_vulnerabilidades = cursorEj2.execute('''SELECT AVG(vulnerabilidades) from analisis''').fetchone()
-    print("La media de vulnerabilidades detectadas es: " + str(media_vulnerabilidades[0]))
-    vulnerabilidades = cursorEj2.execute('''SELECT vulnerabilidades from analisis''').fetchall()
-    desv_vulnerabilidades = statistics.stdev(vuln[0] for vuln in vulnerabilidades)
-    print("La desviación estándar del total de vulnerabilidades detectadas es: " + str(desv_vulnerabilidades))
 
-    puerto_min = cursorEj2.execute('''SELECT MIN(numberports) from analisis''').fetchone()
-    print("El mínimo número de puertos abiertos que se han detectado es: " + str(puerto_min[0]))
-    puerto_max = cursorEj2.execute('''SELECT MAX(numberports) from analisis''').fetchone()
-    print("El máximo número de puertos abiertos que se han detectado es: " + str(puerto_max[0]))
+    print("La media de puertos abiertos es: " + str(df_analisis['numberports'].mean()))
 
-    vuln_min = cursorEj2.execute('''SELECT MIN(vulnerabilidades) from analisis''').fetchone()
-    print("El mínimo número de vulnerabilidades que se han detectado es: " + str(vuln_min[0]))
-    vuln_max = cursorEj2.execute('''SELECT MAX(vulnerabilidades) from analisis''').fetchone()
-    print("El máximo número de vulnerabilidades que se han detectado es: " + str(vuln_max[0]))
+    print("La desviación estándar del total de puertos abiertos es: " + str(df_analisis['numberports'].std()))
+
+    print("La media de servicios inseguros detectados es: " + str(df_analisis['servicios_inseguros'].mean()))
+
+    print("La desviación estándar del total de servicios inseguros detectados es: " + str(df_analisis['servicios_inseguros'].std()))
+
+    print("La media de vulnerabilidades detectadas es: " + str(df_analisis['vulnerabilidades'].mean()))
+
+    print("La desviación estándar del total de vulnerabilidades detectadas es: " + str(df_analisis['vulnerabilidades'].std()))
+
+    print("El mínimo número de puertos abiertos que se han detectado es: " + str(df_analisis['numberports'].min()))
+    print("El máximo número de puertos abiertos que se han detectado es: " + str(df_analisis['numberports'].max()))
+    print("El mínimo número de vulnerabilidades que se han detectado es: " + str(df_analisis['vulnerabilidades'].min()))
+    print("El máximo número de vulnerabilidades que se han detectado es: " + str(df_analisis['vulnerabilidades'].max()))
 
 def ejercicio3(con):
 
@@ -103,10 +94,19 @@ def ejercicio3(con):
 
 con = sqlite3.connect('devices.db')
 
-creacionTablas(con)
-alerts = pd.read_csv('alerts.csv')
-alerts.to_sql('alerts', con, if_exists='append', index=False)
-ejercicio3(con)
+df_alerts = pd.read_csv('alerts.csv')
+df_responsable = pd.read_sql_query("SELECT * from responsable", con)
+df_analisis = pd.read_sql_query("SELECT * from analisis", con)
+df_devices = pd.read_sql_query("SELECT * from devices", con)
+#creacionTablas(con)
+#alerts = pd.read_csv('alerts.csv')
+
+
+
+#print(df_devices.head(20))
+#print(df_alerts.head(20))
+#alerts.to_sql('alerts', con, if_exists='append', index=False)
+ejercicio2(con)
 
 
 
