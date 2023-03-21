@@ -78,12 +78,16 @@ def ejercicio3(con):
 
     cursorEj3 = con.cursor()
 
-    alertas = cursorEj3.execute('''SELECT  COUNT(*) FROM devices JOIN alerts on alerts.origen = devices.ip JOIN analisis on devices.analisis_id = analisis.id  WHERE alerts.prioridad=1''').fetchone()
-    print("El número de alertas de prioridad 1 es: " + str(alertas[0]))
 
-    mediana = cursorEj3.execute('''SELECT vulnerabilidades FROM devices JOIN alerts on alerts.origen = devices.ip JOIN analisis on devices.analisis_id = analisis.id  WHERE alerts.prioridad=1''').fetchall()
-    mediana_valor = statistics.median(mediana)
-    print("La mediana de vulnerabilidades: " + str(print(mediana_valor)))
+
+    print(df_joined.head(15))
+
+    # alertas = cursorEj3.execute('''SELECT  COUNT(*) FROM devices JOIN alerts on alerts.origen = devices.ip JOIN analisis on devices.analisis_id = analisis.id  WHERE alerts.prioridad=1''').fetchone()
+    # print("El número de alertas de prioridad 1 es: " + str(alertas[0]))
+    #
+    # mediana = cursorEj3.execute('''SELECT vulnerabilidades FROM devices JOIN alerts on alerts.origen = devices.ip JOIN analisis on devices.analisis_id = analisis.id  WHERE alerts.prioridad=1''').fetchall()
+    # mediana_valor = statistics.median(mediana)
+    # print("La mediana de vulnerabilidades: " + str(print(mediana_valor)))
 
 
 
@@ -98,6 +102,17 @@ df_alerts = pd.read_csv('alerts.csv')
 df_responsable = pd.read_sql_query("SELECT * from responsable", con)
 df_analisis = pd.read_sql_query("SELECT * from analisis", con)
 df_devices = pd.read_sql_query("SELECT * from devices", con)
+df_devices.to_csv('devices.csv',index=False)
+
+df_joined = pd.merge(df_alerts, df_devices, left_on='origen', right_on='ip', how='inner')
+
+# Por alguna razón, solo une las dos tablas cuando la ip 172.18.0.0 es la que coincide, hay que ver por que no lo hace con las demás.
+
+# Después hay que unir con el dataframe de analisis a traves de la analisis_id para contar el número de vulnerabilidades
+
+
+df_joined.to_csv('joined.csv')
+
 #creacionTablas(con)
 #alerts = pd.read_csv('alerts.csv')
 
@@ -106,7 +121,8 @@ df_devices = pd.read_sql_query("SELECT * from devices", con)
 #print(df_devices.head(20))
 #print(df_alerts.head(20))
 #alerts.to_sql('alerts', con, if_exists='append', index=False)
-ejercicio2(con)
+ejercicio3(con)
+
 
 
 
