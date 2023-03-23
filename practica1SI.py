@@ -2,6 +2,7 @@ import json
 import sqlite3
 import pandas as pd
 import statistics
+import matplotlib.pyplot as plt
 
 def creacionTablas(con):
     cursorObj = con.cursor()
@@ -125,6 +126,28 @@ df_joined.to_csv('joined.csv')
 #alerts.to_sql('alerts', con, if_exists='append', index=False)
 ejercicio3(con)
 
+##ejercicio 4##
+data = pd.read_csv("alerts.csv")
+
+##ip_problematicas = data[data["Prioridad de la alerta"] == 1].groupby("IP de origen").size().sort_values(ascending=False)
+##queda comparar la ip origen con el número de alertas, sacando los datos del csv
+##una vez tengamos eso, se debería generar el gráfico sin ningún problema
+# Tomar las 10 IP de origen con más alertas
+ips = ip_problematicas.head(10)
+
+# Crear el gráfico de barras
+plt.bar(ips.index, ips)
+
+# Añadir título y etiquetas a los ejes
+plt.title("IP de origen más problemáticas")
+plt.xlabel("IP de origen")
+plt.ylabel("Número de alertas con prioridad 1")
+
+# Rotar etiquetas del eje x para que sean legibles
+plt.xticks(rotation=90)
+
+# Mostrar el gráfico
+plt.show()
 
 
 
