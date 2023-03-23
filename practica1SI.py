@@ -2,6 +2,7 @@ import json
 import sqlite3
 import pandas as pd
 import statistics
+import matplotlib.pyplot as plt
 
 def creacionTablas(con):
     cursorObj = con.cursor()
@@ -123,6 +124,21 @@ df_joined.to_csv('joined.csv')
 #alerts.to_sql('alerts', con, if_exists='append', index=False)
 ejercicio3(con)
 
+
+# Datos
+x = [1, 2, 3, 4, 5]
+y = [2, 4, 6, 8, 10]
+
+# Crear gráfico de línea
+plt.plot(x, y)
+
+# Agregar etiquetas
+plt.xlabel('Eje X')
+plt.ylabel('Eje Y')
+plt.title('Gráfico de línea')
+
+# Mostrar gráfico
+plt.show()
 
 
 
