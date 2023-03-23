@@ -99,12 +99,14 @@ def ejercicio3(con):
 con = sqlite3.connect('devices.db')
 
 df_alerts = pd.read_csv('alerts.csv')
-df_responsable = pd.read_sql_query("SELECT * from responsable", con)
+df_responsable = pd.read_sql_query("SELECT * from responsable", con) #tabla pasada a dataframe
 df_analisis = pd.read_sql_query("SELECT * from analisis", con)
 df_devices = pd.read_sql_query("SELECT * from devices", con)
 df_devices.to_csv('devices.csv',index=False)
 
-df_joined = pd.merge(df_alerts, df_devices, left_on='origen', right_on='ip', how='inner')
+df_joined = pd.merge(df_alerts, df_devices, left_on='origen', right_on='ip', how='inner') #AQUI NO LO UNE BIEN
+
+##Conseguir unir las 3 tablas y a partir de ahí hacer lo que pide
 
 # Por alguna razón, solo une las dos tablas cuando la ip 172.18.0.0 es la que coincide, hay que ver por que no lo hace con las demás.
 
