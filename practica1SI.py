@@ -124,20 +124,27 @@ df_joined.to_csv('joined.csv')
 #alerts.to_sql('alerts', con, if_exists='append', index=False)
 ejercicio3(con)
 
+##ejercicio 4##
+data = pd.read_csv("alerts.csv")
 
-# Datos
-x = [1, 2, 3, 4, 5]
-y = [2, 4, 6, 8, 10]
+##ip_problematicas = data[data["Prioridad de la alerta"] == 1].groupby("IP de origen").size().sort_values(ascending=False)
+##queda comparar la ip origen con el número de alertas, sacando los datos del csv
+##una vez tengamos eso, se debería generar el gráfico sin ningún problema
+# Tomar las 10 IP de origen con más alertas
+ips = ip_problematicas.head(10)
 
-# Crear gráfico de línea
-plt.plot(x, y)
+# Crear el gráfico de barras
+plt.bar(ips.index, ips)
 
-# Agregar etiquetas
-plt.xlabel('Eje X')
-plt.ylabel('Eje Y')
-plt.title('Gráfico de línea')
+# Añadir título y etiquetas a los ejes
+plt.title("IP de origen más problemáticas")
+plt.xlabel("IP de origen")
+plt.ylabel("Número de alertas con prioridad 1")
 
-# Mostrar gráfico
+# Rotar etiquetas del eje x para que sean legibles
+plt.xticks(rotation=90)
+
+# Mostrar el gráfico
 plt.show()
 
 
