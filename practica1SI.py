@@ -124,30 +124,39 @@ df_joined.to_csv('joined.csv')
 #alerts.to_sql('alerts', con, if_exists='append', index=False)
 ejercicio3(con)
 
-##ejercicio 4##
-data = pd.read_csv("alerts.csv")
-
-##ip_problematicas = data[data["Prioridad de la alerta"] == 1].groupby("IP de origen").size().sort_values(ascending=False)
-##queda comparar la ip origen con el número de alertas, sacando los datos del csv
-##una vez tengamos eso, se debería generar el gráfico sin ningún problema
-# Tomar las 10 IP de origen con más alertas
-ips = ip_problematicas.head(10)
-
-# Crear el gráfico de barras
-plt.bar(ips.index, ips)
-
-# Añadir título y etiquetas a los ejes
-plt.title("IP de origen más problemáticas")
-plt.xlabel("IP de origen")
-plt.ylabel("Número de alertas con prioridad 1")
-
-# Rotar etiquetas del eje x para que sean legibles
-plt.xticks(rotation=90)
-
-# Mostrar el gráfico
+##ejercicio 4.1##
+df_alerts_p1 = df_alerts.query('prioridad == 1')
+df_ip_alertas = df_alerts_p1.groupby('origen')['prioridad'].count()
+df_ip_alertas = df_ip_alertas.sort_values(ascending=False)
+top_10_ip = df_ip_alertas.head(10)
+plt.bar(top_10_ip.index, top_10_ip.values)
+plt.xlabel('IP de origen')
+plt.ylabel('Número de alertas')
+plt.title('10 IP de origen más problemáticas')
 plt.show()
+"""###ejercicio4.2###
 
-
+from datetime import datetime
+alertas = [5, 6, 3, 8, 10, 12, 9, 7, 5, 4, 6, 8, 11, 13, 15, 12, 9, 6, 4, 7, 10, 12, 9, 6]
+fechas = ['2021-01-01', '2021-01-02', '2021-01-03', '2021-01-04', '2021-01-05', '2021-01-06', '2021-01-07',
+          '2021-01-08', '2021-01-09', '2021-01-10', '2021-01-11', '2021-01-12', '2021-01-13', '2021-01-14',
+          '2021-01-15', '2021-01-16', '2021-01-17', '2021-01-18', '2021-01-19', '2021-01-20', '2021-01-21',
+          '2021-01-22', '2021-01-23', '2021-01-24']
+fechas = [datetime.strptime(fecha, '%Y-%m-%d') for fecha in fechas]
+plt.plot(fechas, alertas)
+plt.xlabel('Fecha')
+plt.ylabel('Número de alertas')
+plt.title('Número de alertas en el tiempo')
+plt.show()
+###ejercicio 4.3###
+categorias = ['Riesgo alto', 'Riesgo medio', 'Riesgo bajo']
+alertas = [20, 50, 80]
+plt.bar(categorias, alertas)
+plt.xlabel('Categorías')
+plt.ylabel('Número de alertas')
+plt.title('Número de alertas por categoría')
+plt.show()
+"""
 
 
 
