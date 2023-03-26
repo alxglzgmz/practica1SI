@@ -123,7 +123,7 @@ df_joined.to_csv('joined.csv')
 #print(df_alerts.head(20))
 #alerts.to_sql('alerts', con, if_exists='append', index=False)
 ejercicio3(con)
-
+"""""
 ##ejercicio 4.1##
 df_alerts_p1 = df_alerts.query('prioridad == 1')
 df_ip_alertas = df_alerts_p1.groupby('origen')['prioridad'].count()
@@ -134,20 +134,19 @@ plt.xlabel('IP de origen')
 plt.ylabel('Número de alertas')
 plt.title('10 IP de origen más problemáticas')
 plt.show()
-"""###ejercicio4.2###
-
-from datetime import datetime
-alertas = [5, 6, 3, 8, 10, 12, 9, 7, 5, 4, 6, 8, 11, 13, 15, 12, 9, 6, 4, 7, 10, 12, 9, 6]
-fechas = ['2021-01-01', '2021-01-02', '2021-01-03', '2021-01-04', '2021-01-05', '2021-01-06', '2021-01-07',
-          '2021-01-08', '2021-01-09', '2021-01-10', '2021-01-11', '2021-01-12', '2021-01-13', '2021-01-14',
-          '2021-01-15', '2021-01-16', '2021-01-17', '2021-01-18', '2021-01-19', '2021-01-20', '2021-01-21',
-          '2021-01-22', '2021-01-23', '2021-01-24']
-fechas = [datetime.strptime(fecha, '%Y-%m-%d') for fecha in fechas]
-plt.plot(fechas, alertas)
+"""
+###ejercicio4.2###
+cursorEj3 = con.cursor()
+alertas = cursorEj3.execute('''SELECT  COUNT(*) FROM devices JOIN alerts on alerts.origen = devices.ip JOIN analisis on devices.analisis_id = analisis.id  WHERE alerts.prioridad=1''').fetchone()
+df_alerts['timestamp'] = pd.to_datetime(df_alerts['timestamp'])
+df_alerts = df_alerts.set_index('timestamp')
+alertas_por_dia = df_alerts.resample('D')['alertas'].count()
+alertas_por_dia.plot(figsize=(12, 6))
 plt.xlabel('Fecha')
 plt.ylabel('Número de alertas')
 plt.title('Número de alertas en el tiempo')
 plt.show()
+"""
 ###ejercicio 4.3###
 categorias = ['Riesgo alto', 'Riesgo medio', 'Riesgo bajo']
 alertas = [20, 50, 80]
