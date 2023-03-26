@@ -135,6 +135,7 @@ plt.ylabel('Número de alertas')
 plt.title('10 IP de origen más problemáticas')
 plt.show()
 """
+"""""
 ###ejercicio4.2###
 cursorEj3 = con.cursor()
 alertas = cursorEj3.execute('''SELECT  COUNT(*) FROM devices JOIN alerts on alerts.origen = devices.ip JOIN analisis on devices.analisis_id = analisis.id  WHERE alerts.prioridad=1''').fetchone()
@@ -148,14 +149,14 @@ plt.title('Número de alertas en el tiempo')
 plt.show()
 """
 ###ejercicio 4.3###
-categorias = ['Riesgo alto', 'Riesgo medio', 'Riesgo bajo']
-alertas = [20, 50, 80]
-plt.bar(categorias, alertas)
-plt.xlabel('Categorías')
+alertas_por_categoria = df_alerts.groupby('prioridad')['sid'].count()
+alertas_por_categoria = alertas_por_categoria.sort_values(ascending=False)
+plt.bar(alertas_por_categoria.index, alertas_por_categoria.values)
+plt.xlabel('Categoría')
 plt.ylabel('Número de alertas')
 plt.title('Número de alertas por categoría')
 plt.show()
-"""
+
 
 
 
