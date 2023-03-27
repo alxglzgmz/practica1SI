@@ -1,7 +1,6 @@
 import json
 import sqlite3
 import pandas as pd
-import statistics
 import matplotlib.pyplot as plt
 
 def ejercicio2():
@@ -135,7 +134,7 @@ def ejercicio4(con):
 
 
 
-
+# ----------- CREACION DE TABLAS Y DATAFRAMES --------------------
 
 con = sqlite3.connect('devices.db')
 
@@ -189,11 +188,9 @@ df_alerts.to_sql('alerts', con, if_exists='replace', index=False)
 df_responsable = pd.read_sql_query("SELECT * from responsable", con)
 df_analisis = pd.read_sql_query("SELECT * from analisis", con)
 df_devices = pd.read_sql_query("SELECT * from devices", con)
-df_devices.to_csv('devices.csv',index=False)
-
 df_alljoined = pd.read_sql_query("SELECT * FROM alerts INNER JOIN devices ON alerts.origen = devices.ip OR alerts.destino = devices.ip INNER JOIN analisis ON devices.analisis_id = analisis.id", con)
 
-
+# ----------------------------------------------------------------------------------------------
 
 ejercicio4(con)
 
