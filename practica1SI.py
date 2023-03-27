@@ -49,6 +49,8 @@ def ejercicio3():
 
         print("El número máximo de vulnerabilidades es: " + str(df_prio['vulnerabilidades'].max()))
 
+
+
     df_alljoined['timestamp'] = pd.to_datetime(df_alljoined['timestamp'])
 
     for i in range(7, 9):
@@ -71,40 +73,68 @@ def ejercicio3():
 
         print("El número máximo de vulnerabilidades es: " + str(df_date['vulnerabilidades'].max()))
 
-def ejercicio4():
-    """""
-    ##ejercicio 4.1##
-    df_alerts_p1 = df_alerts.query('prioridad == 1')
-    df_ip_alertas = df_alerts_p1.groupby('origen')['prioridad'].count()
-    df_ip_alertas = df_ip_alertas.sort_values(ascending=False)
-    top_10_ip = df_ip_alertas.head(10)
-    plt.bar(top_10_ip.index, top_10_ip.values)
+def ejercicio4(con):
+
+    global df_alerts
+    # 10 ips de origen más problemáticas
+    df_alerts = pd.read_sql_query("SELECT * FROM alerts",con)
+    top10_origen = df_alerts[df_alerts['prioridad'] == 1]['origen'].value_counts().head(10)
+
+    plt.bar(top10_origen.index, top10_origen.values)
+    plt.xticks(rotation=90)
+    plt.subplots_adjust(bottom=0.3)
     plt.xlabel('IP de origen')
     plt.ylabel('Número de alertas')
     plt.title('10 IP de origen más problemáticas')
     plt.show()
-    """
-    """""
-    ###ejercicio4.2###
-    cursorEj3 = con.cursor()
-    alertas = cursorEj3.execute('''SELECT  COUNT(*) FROM devices JOIN alerts on alerts.origen = devices.ip JOIN analisis on devices.analisis_id = analisis.id  WHERE alerts.prioridad=1''').fetchone()
-    df_alerts['timestamp'] = pd.to_datetime(df_alerts['timestamp'])
-    df_alerts = df_alerts.set_index('timestamp')
-    alertas_por_dia = df_alerts.resample('D')['alertas'].count()
-    alertas_por_dia.plot(figsize=(12, 6))
-    plt.xlabel('Fecha')
-    plt.ylabel('Número de alertas')
-    plt.title('Número de alertas en el tiempo')
+
+
+    # Número de alertas en el tiempo (por días)
+
+    df_alerts['timestamp'] = pd.to_datetime(df_alerts['timestamp'], errors='coerce')
+    df_alerts.dropna(subset=['timestamp'], inplace=True)
+
+    alerts_by_day = df_alerts.groupby(pd.Grouper(key='timestamp', freq='D')).count()
+
+    alert_time_series = pd.Series(alerts_by_day['sid'].values, index=alerts_by_day.index)
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.plot(alert_time_series.index, alert_time_series.values)
+
+    ax.set_title('Número de alertas en el tiempo')
+    ax.set_xlabel('Fecha y hora')
+    ax.set_ylabel('Número de alertas')
+    ax.grid(True)
+    plt.xticks(rotation=90)
+    plt.subplots_adjust(bottom=0.3)
     plt.show()
-    """
-    ###ejercicio 4.3###
-    alertas_por_categoria = df_alerts.groupby('prioridad')['sid'].count()
+
+
+    # Número de alertas por categoría
+    alertas_por_categoria = df_alerts.groupby('clasificacion')['sid'].count()
     alertas_por_categoria = alertas_por_categoria.sort_values(ascending=False)
     plt.bar(alertas_por_categoria.index, alertas_por_categoria.values)
-    plt.xlabel('Categoría')
+    plt.xlabel('Clasificacion')
     plt.ylabel('Número de alertas')
     plt.title('Número de alertas por categoría')
+    plt.xticks(rotation=90)
+    plt.subplots_adjust(bottom=0.3)
     plt.show()
+
+    # Dispositivos más vulnerables
+    df_devices_analisis = pd.read_sql_query("SELECT * FROM devices JOIN analisis on devices.analisis_id=analisis.id",con)
+    df_devices_analisis['suma_vulnerabilidades'] = df_devices_analisis['vulnerabilidades'] + df_devices_analisis['servicios_inseguros']
+    df_devices_analisis = df_devices_analisis.sort_values('suma_vulnerabilidades', ascending=False)
+    fig, ax = plt.subplots()
+    ax.bar(df_devices_analisis['id_dev'], df_devices_analisis['suma_vulnerabilidades'])
+    ax.set_xlabel('Dispositivos')
+    ax.set_ylabel('Suma de vulnerabilidades y servicios inseguros')
+    ax.set_title('Dispositivos más vulnerables')
+    plt.xticks(rotation=90)
+    plt.subplots_adjust(bottom=0.3)
+    plt.show()
+
+
+
 
 
 con = sqlite3.connect('devices.db')
@@ -120,7 +150,7 @@ cursorObj.execute('''DROP TABLE IF EXISTS devices''')
 cursorObj.execute('''CREATE TABLE IF NOT EXISTS alerts (timestamp timestamp ,sid text ,msg text ,clasificacion text ,prioridad int,protocolo text,origen text ,destino text ,puerto int)''')
 cursorObj.execute('''CREATE TABLE IF NOT EXISTS analisis(id INTEGER PRIMARY KEY, puertosabiertos text, numberports int, servicios int, servicios_inseguros int, vulnerabilidades int)''')
 cursorObj.execute('''CREATE TABLE IF NOT EXISTS responsable(nombre text PRIMARY KEY, telefono text, rol text)''')
-cursorObj.execute('''CREATE TABLE IF NOT EXISTS devices(id text PRIMARY KEY, ip text, localizacion text, nombre_responsable text, analisis_id int, FOREIGN KEY(nombre_responsable) REFERENCES responsable(nombre), FOREIGN KEY(analisis_id) REFERENCES analisis(id))''')
+cursorObj.execute('''CREATE TABLE IF NOT EXISTS devices(id_dev text PRIMARY KEY, ip text, localizacion text, nombre_responsable text, analisis_id int, FOREIGN KEY(nombre_responsable) REFERENCES responsable(nombre), FOREIGN KEY(analisis_id) REFERENCES analisis(id))''')
 
 
 cursorObj.execute('''INSERT INTO responsable VALUES ("admin", "656445552","Administracion de sistemas") ON CONFLICT(nombre) DO NOTHING''')
@@ -155,6 +185,7 @@ con.commit()
 
 df_alerts = pd.read_csv('alerts.csv')
 df_alerts.to_sql('alerts', con, if_exists='replace', index=False)
+
 df_responsable = pd.read_sql_query("SELECT * from responsable", con)
 df_analisis = pd.read_sql_query("SELECT * from analisis", con)
 df_devices = pd.read_sql_query("SELECT * from devices", con)
@@ -164,7 +195,7 @@ df_alljoined = pd.read_sql_query("SELECT * FROM alerts INNER JOIN devices ON ale
 
 
 
-ejercicio3()
+ejercicio4(con)
 
 
 

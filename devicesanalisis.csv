@@ -1,0 +1,8 @@
+,id,ip,localizacion,nombre_responsable,analisis_id,id,puertosabiertos,numberports,servicios,servicios_inseguros,vulnerabilidades,suma_vulnerabilidades
+0,web,172.18.0.0,None,admin,1,1,"80/TCP, 443/TCP, 3306/TCP, 40000/UDP",4,3,0,15,15
+1,paco_pc,172.17.0.0,Barcelona,Paco Garcia,2,2,None,0,0,0,4,4
+2,luis_pc,172.19.0.0,Madrid,Luis Sanchez,3,3,"1194/UDP, 8080/TCP, 8080/UDP, 40000/UDP",4,1,1,52,53
+3,router1,172.1.0.0,None,admin,4,4,"443/UDP, 80/TCP",2,1,0,3,3
+4,dhcp_server,172.1.0.1,Madrid,admiin,5,5,"80/TCP, 67/UDP, 68/UDP",3,2,2,12,14
+5,mysql_db,172.18.0.1,None,admin,6,6,"8080/TCP, 3306/TCP, 3306/UDP",3,2,0,2,2
+6,ELK,172.18.0.2,None,admin,7,7,"80/TCP, 443/TCP, 9200/TCP, 9300/TCP, 5601/TCP",5,3,2,21,23
