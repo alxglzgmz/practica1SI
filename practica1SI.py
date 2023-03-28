@@ -100,7 +100,7 @@ def ejercicio4(con):
     ax.plot(alert_time_series.index, alert_time_series.values)
 
     ax.set_title('Número de alertas en el tiempo')
-    ax.set_xlabel('Fecha y hora')
+    ax.set_xlabel('Fecha')
     ax.set_ylabel('Número de alertas')
     ax.grid(True)
     plt.xticks(rotation=90)
@@ -151,7 +151,7 @@ def ejercicio4(con):
 
 # ----------- CREACION DE TABLAS Y DATAFRAMES --------------------
 
-con = sqlite3.connect('devices.db')
+con = sqlite3.connect('practica1.db')
 
 cursorObj = con.cursor()
 
