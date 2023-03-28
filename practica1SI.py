@@ -132,6 +132,21 @@ def ejercicio4(con):
     plt.subplots_adjust(bottom=0.3)
     plt.show()
 
+    # Media de puertos abiertos frente a servicios y frente a servicios inseguros.
+    df_ports = df_devices_analisis[['numberports', 'servicios']]
+    grupo_servicio = df_ports.groupby('servicios').mean()
+    grafico = grupo_servicio.plot(kind='bar', legend=None)
+    grafico.set_xlabel('Número de servicios seguros')
+    grafico.set_ylabel('Número de puertos abiertos (media)')
+    plt.show()
+
+    df_ports_i = df_devices_analisis[['numberports', 'servicios_inseguros']]
+    grupo_servicio_i = df_ports_i.groupby('servicios_inseguros').mean()
+    grafico_i = grupo_servicio_i.plot(kind='bar', legend=None)
+    grafico_i.set_xlabel('Número de servicios inseguros')
+    grafico_i.set_ylabel('Número de puertos abiertos (media)')
+    plt.show()
+
 
 
 # ----------- CREACION DE TABLAS Y DATAFRAMES --------------------
