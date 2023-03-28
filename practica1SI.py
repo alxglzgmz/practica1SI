@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 def ejercicio2():
-    num_disp = df_devices['id'].nunique()
+    num_disp = df_devices['id_dev'].nunique()
     print("El número de dispositivos es: " + str(num_disp))
 
 
