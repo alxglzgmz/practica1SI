@@ -1,8 +1,0 @@
-id_dev,ip,localizacion,nombre_responsable,analisis_id
-web,172.18.0.0,None,admin,1
-paco_pc,172.17.0.0,Barcelona,Paco Garcia,2
-luis_pc,172.19.0.0,Madrid,Luis Sanchez,3
-router1,172.1.0.0,None,admin,4
-dhcp_server,172.1.0.1,Madrid,admiin,5
-mysql_db,172.18.0.1,None,admin,6
-ELK,172.18.0.2,None,admin,7
