@@ -207,6 +207,8 @@ df_alljoined = pd.read_sql_query("SELECT * FROM alerts INNER JOIN devices ON ale
 
 # ----------------------------------------------------------------------------------------------
 
+ejercicio2()
+ejercicio3()
 ejercicio4(con)
 
 
